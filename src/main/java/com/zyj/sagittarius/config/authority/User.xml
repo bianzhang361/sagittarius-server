@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyj.sagittarius.dao.authority.UserDao">
+    <sql id="queryConditions">
+        <if test="ety.userName != null and ety.userName !=''">
+            and user_name like CONCAT('%', #{ety.userName}, '%')
+        </if>
+    </sql>
+
+    <select id="listPagerByCondition" resultType="com.zyj.sagittarius.entity.User">
+        select * from (
+        select * from user where 1=1
+        <include refid="queryConditions" />
+        ) tb limit ${pager.pageIndex},${pager.pageSize}
+    </select>
+
+    <select id="countAll" resultType="java.lang.Integer">
+        select count(*) count from (
+        select * from user where 1=1
+        <include refid="queryConditions" />
+        ) tempTable
+    </select>
+
+    <insert id="insertUser" parameterType="com.zyj.sagittarius.entity.User" useGeneratedKeys="true" keyProperty="id" >
+		insert into user (
+			email,
+			user_name,
+			password,
+			gender,
+			birthday,
+			create_time
+		) values (
+			#{email},
+			#{user_name},
+			#{birthday},
+			#{sex},
+			#{address},
+			local_time
+		)
+	</insert>
+
+    <update id="updateUser" parameterType="com.zyj.sagittarius.entity.User">
+		update user set
+			email = #{email},
+			user_name = #{userName},
+			password = #{password},
+			gender = #{gender},
+			birthday = #{birthday}
+		where
+			id = #{id}
+	</update>
+
+    <delete id="deleteUser" parameterType="Integer">
+		delete from user where id = #{id}
+	</delete>
+
+    <select id="getUserById" resultType="com.zyj.sagittarius.entity.User">
+		select * from user where id = #{id}
+	</select>
+
+    <select id="getUserByUserName" resultType="com.zyj.sagittarius.entity.User">
+		select * from user where userName = #{userName}
+	</select>
+
+</mapper>
